@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useTheme } from "../contexts/ThemeContext";
 import { UserAuth } from "../contexts/AuthContext.jsx";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/navigation/NavBar";
 
 export default function Login() {
-  const { googleSignIn, user } = UserAuth();
+  const { googleSignIn, doSignInWithEmailAndPassword, user } = UserAuth();
   const navigate = useNavigate();
   const { currentTheme } = useTheme();
   const isEarthy = currentTheme === "earthy";
@@ -30,14 +30,10 @@ export default function Login() {
 
     // Simulate login process
     try {
-      // Add your Firebase auth logic here
-      console.log("Login attempt:", formData);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await doSignInWithEmailAndPassword(formData.email, formData.password);
 
       // On success, redirect to home
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       setError("Invalid email or password. Please try again.");
       console.log(error);

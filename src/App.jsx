@@ -1,12 +1,12 @@
 import "./App.css";
 import "./ThemeStyles.css";
-import NavBar from "./components/NavBar";
-import ThemeToggle from "./components/ThemeToggle";
+import NavBar from "./components/navigation/NavBar";
+import ThemeToggle from "./components/ui/ThemeToggle";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { Routes, Route } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./src/firebase";
 
-import Home from "./pages/Home";
-import Home2 from "./pages/Home2";
 import UnifiedHome from "./pages/UnifiedHome";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -17,11 +17,20 @@ import Dashboard from "./webapp-pages/Dashboard";
 import AIChat from "./webapp-pages/AIChat";
 import Community from "./webapp-pages/Community";
 import { AuthContextProvider } from "./contexts/AuthContext";
-import Protected from "./components/Protected";
+import { MessengerProvider } from "./contexts/MessengerContext";
+import Protected from "./components/ui/Protected";
+import MessengerWidget from "./components/messaging/MessengerWidget";
 import { SelfCare } from "./webapp-pages/SelfCare";
 import JournalEntries from "./webapp-pages/selfcare-features/JournalEntries";
 import Goals from "./webapp-pages/selfcare-features/Goal";
-
+import BreathingExercises from "./webapp-pages/selfcare-features/BreathingExercises";
+import GuidedVideos from "./webapp-pages/selfcare-features/GuideVideos/GuideVideos";
+import VideoWatch from "./webapp-pages/selfcare-features/GuideVideos/VideoWatch";
+import ProfilePage from "./pages/ProfilePage";
+import { FriendProfilePage } from "./pages/FriendProfilePage";
+import { ChatPage } from "./pages/ChatPage";
+import DirectMessages from "./webapp-pages/DirectMessages";
+import { FriendsPage } from "./webapp-pages/FriendsPage";
 
 export default function App() {
   return (
@@ -29,12 +38,12 @@ export default function App() {
       <div className="min-h-screen">
         <ThemeToggle />
         <AuthContextProvider>
-          <Routes>
+          <MessengerProvider>
+            <MessengerWidget />
+            <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<UnifiedHome />} />
             <Route path="/home" element={<UnifiedHome />} />
-            <Route path="/home-earthy" element={<Home />} />
-            <Route path="/home-cool" element={<Home2 />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/about" element={<About />} />
             <Route path="/users" element={<Users />} />
@@ -44,6 +53,14 @@ export default function App() {
               element={
                 <Protected>
                   <Dashboard />
+                </Protected>
+              }
+            />
+            <Route
+              path="/breathing"
+              element={
+                <Protected>
+                  <BreathingExercises />
                 </Protected>
               }
             />
@@ -60,6 +77,22 @@ export default function App() {
               element={
                 <Protected>
                   <JournalEntries />
+                </Protected>
+              }
+            />
+            <Route
+              path="/guide-videos"
+              element={
+                <Protected>
+                  <GuidedVideos />
+                </Protected>
+              }
+            />
+            <Route
+              path="/guide-videos/:id"
+              element={
+                <Protected>
+                  <VideoWatch />
                 </Protected>
               }
             />
@@ -87,7 +120,34 @@ export default function App() {
                 </Protected>
               }
             />
+            <Route
+              path="/messages"
+              element={
+                <Protected>
+                  <DirectMessages />
+                </Protected>
+              }
+            />
+            <Route path="/profile/:uid" element={<FriendProfilePage />} />
+            <Route path="/chat/:uid" element={<ChatPage />} />
+            <Route
+              path="/profile"
+              element={
+                <Protected>
+                  <ProfilePage />
+                </Protected>
+              }
+            />
+            <Route
+              path="/friends"
+              element={
+                <Protected>
+                  <FriendsPage />
+                </Protected>
+              }
+            />
           </Routes>
+          </MessengerProvider>
         </AuthContextProvider>
       </div>
     </ThemeProvider>
